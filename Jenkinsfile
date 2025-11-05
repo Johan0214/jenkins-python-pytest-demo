@@ -1,24 +1,21 @@
 pipeline {
-  agent any
-  stages {
-    stage('Install dependencies and run tests in Python container') {
-      steps {
-        script {
-          docker.image('python:3.11').inside('-u 0:0') {
-            sh 'python -V'
-            sh 'python -m venv venv'
-            sh './venv/bin/pip install --upgrade pip'
-            sh './venv/bin/pip install -r requirements.txt'
-            sh './venv/bin/pytest --junitxml=report.xml || true'
-          }
+    agent any
+    stages {
+        stage('Install dependencies') {
+            steps {
+                sh 'python3 -m venv venv'
+                sh './venv/bin/pip install -r requirements.txt'
+            }
         }
-      }
-      post {
-        always {
-          junit 'report.xml'
+        stage('Run tests') {
+            steps {
+                sh './venv/bin/pytest --junitxml=report.xml'
+            }
         }
-      }
+        stage('Publish Report') {
+            steps {
+                junit 'report.xml'
+            }
+        }
     }
-  }
 }
-
