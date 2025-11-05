@@ -7,5 +7,3 @@ def test_subtraction():
 def test_failure_example():
     assert 2 * 2 == 5  # This will fail
 
-def test_new():
-    assert True  # New test!
